@@ -1,0 +1,18 @@
+{
+  "name": "stats-bot",
+  "version": "1.0.0",
+  "description": "Discord server statistics bot for emoji and message tracking",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": ["discord", "bot", "statistics", "emoji", "tracker"],
+  "author": "Mr.b",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "better-sqlite3": "^9.2.2",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.3.1"
+  }
+}
