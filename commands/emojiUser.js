@@ -1,5 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
+// Rate limiting
+const cooldowns = new Map();
+const COOLDOWN_SECONDS = 10;
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('emoji_user')
@@ -40,6 +44,27 @@ module.exports = {
     ),
 
   async execute(interaction, database) {
+    // Rate limiting check
+    const userId = interaction.user.id;
+    const now = Date.now();
+    const cooldownAmount = COOLDOWN_SECONDS * 1000;
+
+    if (cooldowns.has(userId)) {
+      const expirationTime = cooldowns.get(userId) + cooldownAmount;
+      
+      if (now < expirationTime) {
+        const timeLeft = ((expirationTime - now) / 1000).toFixed(1);
+        await interaction.reply({
+          content: `⏱️ 이 명령어는 ${timeLeft}초 후에 다시 사용할 수 있습니다.`,
+          ephemeral: true
+        });
+        return;
+      }
+    }
+
+    cooldowns.set(userId, now);
+    setTimeout(() => cooldowns.delete(userId), cooldownAmount);
+
     const targetUser = interaction.options.getUser('user');
     const startDay = interaction.options.getInteger('start_day') || 1;
     const endDay = interaction.options.getInteger('end_day') || 1;
